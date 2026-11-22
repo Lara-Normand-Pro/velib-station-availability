@@ -1,0 +1,38 @@
+# private keys and secrets: NEVER commit
+*.pem
+*.key
+.env
+*token*
+
+# data lives on Zenodo, not in Git
+vm1/
+vm2/
+vmtest/
+zenodo/
+data/*
+!data/README.md
+*.tar
+*.tar.gz
+*.gz
+*.zip
+*.parquet
+*.sqlite
+*.log
+*.sha256
+
+# local leftovers
+velib_code_update/
+CHANGES.md
+raw_sample/
+
+# Python / notebooks / editors
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+.vscode/
+.DS_Store
+
+README_zenodo.md
+velib_vm*_summary.txt
+docs/feedback_*.pdf
