@@ -1,4 +1,4 @@
-﻿# Vélib' station availability in Paris, 20 September - 16 November 2026
+# Vélib' station availability in Paris, 20 September - 16 November 2026
 
 Group H, ESSEC, course "Data, Data storage". We collected the real-time Vélib' Métropole feed
 every 5 minutes for 8 weeks with two independent collectors, and we study how often a station
@@ -118,7 +118,7 @@ Everything is defined in `DATA_DICTIONARY.md`.
 
 ## Licence and citation
 
-Data: Vélib' Métropole / Smovengo, Open Database License (ODbL 1.0). Code: [CODE LICENCE].
+Data: Vélib' Métropole / Smovengo, Open Database License (ODbL 1.0). Code: MIT (see LICENSE).
 
 Cite the data as: Gueddas, K., Ben Njima, A., Normand, L., Ben Bachir, A., Labergère, A. (2026).
 *Vélib' Métropole station status, 20.09.2026 - 16.11.2026 (two collectors)* [Data set]. Zenodo.
