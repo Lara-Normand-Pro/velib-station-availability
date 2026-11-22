@@ -1,6 +1,7 @@
 # Vélib' project: raw data quality and cleaning
 
-Group H. Kenza Gueddas, Adem Ben Njima, Lara Normand, Amine Ben Bachir, Adrien Labergère. 03.11.2026
+Group H. Kenza Gueddas, Adem Ben Njima, Lara Normand, Amine Ben Bachir Hassani, Adrien Labergère.
+First version 03.11.2026, updated 22.11.2026 with the full collection (20.09 to 16.11.2026).
 
 ## Our question, made precise after peer review
 
@@ -8,7 +9,7 @@ Group H. Kenza Gueddas, Adem Ben Njima, Lara Normand, Amine Ben Bachir, Adrien L
 while no other station within 300 m of it can serve them instead, and does this differ between
 Paris and the surrounding communes?**
 
-Three points are now explicit, as Group I suggested. Distances are measured from station to
+Three points are explicit, as Group I suggested. Distances are measured from station to
 station, not from the user, because user positions are not in the data and the user is already at
 a station when the problem happens. Renting and returning are studied separately: a station with
 no bikes can still take returns. The comparison unit is the commune, summarised as Paris versus
@@ -18,9 +19,11 @@ the rest of the network. The 300 m is the spacing Vélib' Métropole gives for P
 
 ## What we checked, and on what
 
-Every figure below comes from 21.09, the complete day shipped in `raw_sample/`, so a reader can
-reproduce all of them with `python code/run_all.py`. Run on our full archive, the same scripts give
-the period-wide tables in `data/clean/`.
+The figures below cover the whole collection: every `station_status` capture from 20.09.2026 to
+16.11.2026 23:59:59 UTC (all times are UTC). Two collectors ran in parallel, VM1 and VM2, and
+their data are never merged. The figures are those of VM1; VM2 gives the same picture
+(for example 202,853 and 203,012 failure episodes). Everything can be reproduced from the
+Zenodo record (DOI 10.5281/zenodo.24444738) with `python code/run_all.py --vm vm1 --no-bench`.
 
 We assessed quality at five levels, from the collection down to the meaning of one field:
 
@@ -34,57 +37,60 @@ We assessed quality at five levels, from the collection down to the meaning of o
 
 ## Findings
 
-| Problem | Evidence (21.09) | Effect on our question | Decision |
+| Problem | Evidence (VM1, full period) | Effect on our question | Decision |
 |---|---|---|---|
-| Incomplete capture | 22:50 UTC: 24 KB instead of 34 KB, `stationCode` and the mechanical / electric split missing for all 1,518 stations. Over the full archives (20.09 to 03.11) the same defect appears in 96 captures on VM1 and 98 on VM2 (0.8 %), at all hours, and in the same 5-minute slot on both machines for 96 of them: it comes from the server, not from our collectors (`docs/vm_comparison.md`) | none on availability: bike and dock counts are present | keep, flag `partial_capture`; `collect.sh` v2 checks content |
-| Truncated or unreadable capture | none in 295 checked files | would distort a whole time step | drop any capture with fewer than 1,400 stations |
-| Exact duplicates | none on one machine | will appear when the two VMs are merged | drop repeated `(station_id, fetched_at)` |
-| Stations entering and leaving | one station leaves after 22.09 (Argenteuil, capacity 0); Concorde and Invalides (about 410 docks each) appear on 24.09 and rent on one day only (26.09) | a station that is not really part of the network would count as a failure or as an alternative | match each day with that day's station list; flag `temporary` and `event_station`; exclude both from the panel |
-| Missing capacity | 4 stations with capacity 0 | `docks_unavailable` cannot be computed | capacity 0 set to unknown, station kept |
-| Counts above capacity | 0.85% of rows: bikes + docks exceed capacity | small; counts are what users see | flag `capacity_conflict`, keep the counts |
-| Docks not usable | in 50.6% of rows, bikes + docks is below capacity (median gap: 1 dock) | broken docks; already reflected in free docks | computed as `docks_unavailable`, no change |
-| Out of service | 1.6% of rows; 26 stations out of service all day | a real failure for users | kept, counted on both sides |
-| Silent stations | 23 stations with `last_reported` older than 3 h at some point, mostly out of service | their counts may be stale | flag `silent`; decide per analysis |
-| Frozen stations | 3 stations in service with identical counts for 12 h or more (one full for 24 h) | a stuck sensor would read as a long failure | flag `frozen`, exclude those rows from the panel |
+| Collection gaps | 57 full days, all with 288 captures; 16,452 captures in total; 0 failed requests; the longest gap between two captures is 5 minutes | none | nothing to repair |
+| Incomplete capture | 122 captures (0.74%; VM2: 123): `stationCode` and the mechanical / electric split missing for every station, file of about 24 KB instead of 34 KB. They occur at all 24 hours, the first on 21.09 at 22:50 UTC. 120 fall in the same 5-minute slot on both machines: the cause is the server, not our collectors (`docs/vm_comparison.md`) | none on availability: bike and dock counts are present | keep, flag `partial_capture` (185,378 rows); `collect.sh` v2 checks content |
+| Truncated or unreadable capture | none in 16,452 files (1,517 to 1,525 stations each) | would distort a whole time step | rule kept: drop any capture with fewer than 1,400 stations; it removed 0 rows |
+| Exact duplicates | none on one machine | would appear if the two VMs were merged | drop repeated `(station_id, fetched_at)`; removed 0 rows |
+| Stations entering and leaving | 1,527 station ids in 58 days: 1,515 regular, 8 `temporary` (listed on under half of the days, for example Argenteuil), 4 event stations: Concorde (409 docks), Invalides (410), "Station Tour de France" (204), Vincennes racecourse (100) | a station that is not really part of the network would count as a failure or as an alternative | match each day with that day's station list; flag `temporary` (10,893 rows) and `event_station` (63,722 rows); exclude both from the panel |
+| Missing capacity | 12 stations with capacity 0 or missing (45,498 rows, 0.18%) | `docks_unavailable` cannot be computed | capacity set to unknown, station kept |
+| Counts above capacity | 195,000 rows (0.78%): bikes + docks exceed capacity | small; counts are what users see | flag `capacity_conflict`, keep the counts |
+| Out of service | 2.6% of rows; a median of 23.5 stations out of service for a whole day, and 18 stations out of service for at least 99% of the period | a real failure for users | kept, counted on both sides |
+| Silent stations | 271 stations have `last_reported` older than 3 h at some point (290,804 rows, 1.16%), mostly out of service | their counts may be stale | flag `silent`; decide per analysis |
+| Frozen stations | 326 stations in service with identical counts for 12 h or more at some point (183,072 rows, 0.73%) | a stuck sensor would read as a long failure | flag `frozen`, exclude those rows from the panel |
 | `last_reported` misread | see next section | our planned deduplication would have removed most episodes | dropped the deduplication; keep every capture |
 
 ## The main correction: what `last_reported` is
 
 On 29.09 we read `last_reported` as the moment the counts were measured. From that we concluded
-that stations report every half hour, that 91.6% of our rows repeated an earlier report, and that
+that stations report every half hour, that most of our rows repeated an earlier report, and that
 we should keep one row per distinct `last_reported`. Group I showed this reading was wrong, and our
-own check (`sampling_test.py`) confirms it:
+own check (`sampling_test.py`) confirms it on the whole period:
 
-| Measure (21.09) | Value |
+| Measure (full period) | Value |
 |---|---|
-| Consecutive captures with unchanged `last_reported` where the counts changed | 30.3% |
-| Count changes that happen while `last_reported` is unchanged | 90.5% |
-| `last_reported` renewals per station per hour, night / day | 1.05 / 1.12 |
-| Count changes per station per hour, night / day | 0.60 / 5.05 |
+| Consecutive captures with unchanged `last_reported` where the counts changed | 28.5% |
+| Count changes that happen while `last_reported` is unchanged | 89.4% |
+| `last_reported` renewals per station per hour, night (00-05 UTC) / day (06-19 UTC) | 1.12 / 1.24 |
+| Count changes per station per hour, night / day | 1.03 / 4.52 |
+| Median age of `last_reported` when we read it | 32.9 min |
 
 `last_reported` renews about once an hour, day and night alike, while the counts follow the
 activity of the city. It behaves like an hourly signal from the station, not a measurement time.
-The 32 minutes we reported as a delay is simply the average age of an hourly timestamp, and the
-91% of repeated values is 11 captures out of 12. We renamed the column `lr_age_min` (it was
-`lag_min`) so nobody reads it as a delay of the counts.
+The 33 minutes we first read as a delay is simply the typical age of an hourly timestamp, and the
+91.4% of rows that repeat an earlier `(station, last_reported)` pair is 11 captures out of 12. We
+renamed the column `lr_age_min` (it was `lag_min`) so nobody reads it as a delay of the counts.
 
 We then tested what our plan would have cost, by recounting episodes with the same rule (at
 least two consecutive kept captures) on coarser data:
 
-| Kept data | No-bike episodes | 5-min episodes still visible | Share of time without a bike |
-|---|---|---|---|
-| Every capture (5 min) | 2,630 | 100% | 6.67% |
-| One capture every 15 min | 1,376 | 92.6% | 6.65% |
-| One capture every 60 min | 416 | 48.7% | 6.57% |
-| One row per `last_reported` (our old plan) | 436 | 52.4% | 5.82% |
+| Kept data (cannot rent) | Episodes | Share of the 5-min episodes | 5-min episodes still seen | Share of rows failing |
+|---|---|---|---|---|
+| Every capture (5 min) | 124,950 | 100% | 100% | 6.94% |
+| One capture every 15 min | 67,149 | 53.7% | 93.1% | 6.94% |
+| One capture every 30 min | 38,374 | 30.7% | 73.2% | 6.92% |
+| One capture every 60 min | 20,470 | 16.4% | 50.3% | 6.92% |
+| One row per `last_reported` (our old plan) | 21,041 | 16.8% | 51.1% | 6.12% |
 
 Coarser sampling barely changes the share of time without a bike, but it erases episodes: at
 60 minutes or with our old deduplication, only about one episode in six is still counted and half
-are not seen at all. The deduplication also biases the share of time downwards (5.82% instead of
-6.67%), because it keeps the first row of each hour. Since 56% of no-bike episodes last less than
+are not seen at all. The deduplication also biases the share of time downwards (6.12% instead of
+6.94%), because it keeps the first row of each hour. Since 55% of no-bike episodes last less than
 30 minutes, this is exactly the part of the answer we would have lost. The returning side gives
-the same picture (`data/clean/sampling_sensitivity.csv`). This also answers Prof. Pascual's
-question on the 5-minute interval: it is the rate at which the counts actually move.
+the same picture (`data/vm1/clean/sampling_sensitivity.csv`): 77,903 episodes at 5 minutes,
+17.2% kept at 60 minutes. This also answers Prof. Pascual's question on the 5-minute interval: it
+is the rate at which the counts actually move.
 
 What we still cannot know: the counts are renewed at least every 5 minutes, but the feed does not
 tell us how long after an event they change, so a short delay may remain.
@@ -94,11 +100,12 @@ tell us how long after an event they change, so a short delay may remain.
 **Principle: we flag, we do not alter.** The feed is our only source, so we have nothing to
 correct a count against. Rows are removed only when they carry no usable information (a truncated
 capture, an exact duplicate). Every other problem becomes a boolean column, and the analysis uses
-one column, `in_panel`, so each exclusion is visible and can be reversed.
+one column, `in_panel`, so each exclusion is visible and can be reversed. On the full period the
+two removal rules did not remove a single row; all the cleaning is done by flags.
 
 1. **Captures.** Drop captures with fewer than 1,400 stations (the network has about 1,519).
    Keep partial captures: availability only needs the counts.
-2. **Duplicates.** Drop repeated `(station_id, fetched_at)`. Needed once the two VMs are merged.
+2. **Duplicates.** Drop repeated `(station_id, fetched_at)`. Needed only if the two VMs are merged.
 3. **Same-day station list.** Join each day's status with the station list of that same day
    (union of its 24 hourly lists for membership, the last one for coordinates and capacity), as
    Group I suggested. A station absent from that day's list is flagged.
@@ -119,22 +126,22 @@ one column, `in_panel`, so each exclusion is visible and can be reversed.
    quiet station stuck.
 9. **Panel.** `in_panel` = in the same-day list, not temporary, not an event station, not frozen.
 
-On 21.09 the panel keeps 435,910 of 437,184 rows (99.7%) and 1,515 stations. In it, a station
-cannot rent 6.7% of the time and cannot take a return 4.7% of the time.
+On the full period the panel keeps 24,740,954 of 24,998,625 rows (98.97%) and 1,515 stations. In
+it, a station cannot rent 6.94% of the time and cannot take a return 5.21% of the time.
 
 **Episodes** (`episodes.py`) are built on every capture: a run of at least two consecutive
-captures where the station cannot rent (or cannot take a return). On 21.09: 2,602 no-bike and
-1,639 no-dock episodes, plus 28 on each side that last the whole day, almost all at stations
-out of service. The median no-bike episode
-is observed for 25 minutes, the median no-dock one for 20. Durations are what we saw: the true
-episode can be up to 5 minutes longer at each end, and on a single day, episodes are cut at
-midnight.
+captures where the station cannot rent (or cannot take a return). On the full period: 124,950
+no-bike and 77,903 no-dock episodes, at 1,500 stations. The median no-bike episode is observed for
+25 minutes, the median no-dock one for 20; 90% last 95 minutes or less, and only 1,134 episodes
+(under 1%) last 24 hours or more. Durations are what we saw: the true episode can be up to
+5 minutes longer at each end.
 
 ## Storage: first comparison
 
-`storage_benchmark.py` loads the cleaned day into SQLite (primary key on station and time, index on
-time) and compares it with our date-partitioned Parquet read by DuckDB, on the three queries the
-analysis needs:
+`storage_benchmark.py` loads the cleaned day 21.09 into SQLite (primary key on station and time,
+index on time) and compares it with our date-partitioned Parquet read by DuckDB, on the three
+queries the analysis needs. This comparison was made on that one day (437,184 rows); we did not
+rerun it on the whole period (`--no-bench`).
 
 | 21.09, 437,184 rows | SQLite | Parquet + DuckDB |
 |---|---|---|
@@ -150,11 +157,12 @@ as many lookups, and measure again on the whole period before choosing.
 
 ## Still open
 
-- The full-period run of the cleaning (on our archive, not shipped) and the merge of the two
-  machines. The comparison with `compare_vms.py` is done (`docs/vm_comparison.md`): both machines
-  hold every 5-minute slot of the 43 full days, so the merge adds no capture.
+- The two machines are not merged: VM1 is the main series, and VM2 is a reliability check.
+  Both machines hold every 5-minute slot of the 57 full days (`docs/vm_comparison.md`), so a merge
+  would add no capture.
 - The commune boundaries (IGN) and population (INSEE), joined in the analysis step. Population is
   used as context (stations per resident, density), never as a count of affected users.
-- `collect.sh` version 2 checks the content of every file before archiving it; captures archived
-  by version 1 are checked afterwards by `validate.py`.
-- Demonstrations and riots in Paris after the 29.09 snapshot will appear in the data collected later (stations closed or damaged). The data analysed here is not affected. For the final project we will mark those days and report the results with and without them.
+- Demonstrations and riots in Paris after the 29.09 snapshot appear in the data collected later
+  (stations closed or damaged). In the analysis we will mark those days and report the results
+  with and without them.
+- Eight weeks of autumn: no winter and no summer, so the results describe this season only.

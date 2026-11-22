@@ -9,7 +9,7 @@ The collectors are plain Linux machines with `cron`. Two identical VMs (VM1 and 
 
 ## What you need
 
-- A small always-on Linux machine (we used Ubuntu 24.04 on a small cloud VM, region France Central).
+- A small always-on Linux machine (we used Ubuntu 24.04 on a small cloud VM).
   Any machine that stays on 24/7 works.
 - `bash`, `curl`, `cron` and `python3` (only used for the content check inside `collect.sh`).
 - Little disk space: two months of compressed captures were about 0.7 GB per VM, so any default disk is enough.
