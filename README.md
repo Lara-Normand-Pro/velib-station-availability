@@ -5,7 +5,7 @@ every 5 minutes for 8 weeks with two independent collectors, and we study how of
 cannot give or take a bike, and whether another working station lies within 300 m (about a
 4-minute walk) at that moment.
 
-- **Data (Zenodo):** 10.5281/zenodo.24444738. Raw captures, derived tables, checksums, frozen code.
+- **Data (Zenodo):** [10.5281/zenodo.24444738](https://doi.org/10.5281/zenodo.24444738). Raw captures, derived tables, checksums, frozen code.
 - **This repository:** the code, the setup to collect again, the analysis, the report and the slides.
 
 ## What is where
