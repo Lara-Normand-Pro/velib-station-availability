@@ -1,0 +1,9 @@
+duckdb>=1.0
+pandas>=2.0
+pyarrow>=14.0
+numpy>=1.26
+matplotlib>=3.7
+requests>=2.31
+psutil>=5.9
+jupyterlab>=4.0
+imageio-ffmpeg>=0.4   # optional: mp4 for the replay (section 10)

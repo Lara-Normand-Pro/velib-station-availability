@@ -11,6 +11,8 @@ vmtest/
 zenodo/
 data/*
 !data/README.md
+!data/external/
+data/external/map_background.json
 *.tar
 *.tar.gz
 *.gz
