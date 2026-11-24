@@ -25,7 +25,7 @@ vm_setup/      how the collector VMs were set up
 notebooks/     the analysis
 report/        final report
 slides/        presentation
-data/          empty here: see data/README.md
+data/          data/external/: small hand-made tables (events, communes); the rest is empty here, see data/README.md
 DATA_DICTIONARY.md   every file, table and column
 ```
 
@@ -52,6 +52,20 @@ You need Python (tested with 3.12) and about 64 GB of RAM for a full rebuild (on
    Results go to `data/vm1/`, `data/vm2/` and `data/vm_comparison.csv`. VM1 and VM2 are never mixed.
 4. Shortcut: unpack `vm1_parquet.tar` and `vm2_parquet.tar` from the record into `data/vm1/` and
    `data/vm2/` to skip step 3. The notebook reads the Parquet tables.
+
+## Run the analysis notebook
+
+`notebooks/analysis.ipynb` is the full analysis, one section per section of the report. It downloads the
+data it needs from Zenodo (about 750 MB, with checksums) and queries the Parquet tables with DuckDB.
+
+1. `pip install -r notebooks/requirements.txt`, then open `notebooks/analysis.ipynb` and Run All.
+2. `VM = "vm1"` (first code cell) is the main series. Set `VM = "vm2"`, run again, then set `VM = "vm1"` to
+   get the VM1 / VM2 comparison.
+3. `RUN_REPLAY` (video, 4 to 25 minutes) and `RUN_BENCHMARK` (storage benchmark, slow, needs disk) are `False`
+   by default: set them to `True` by hand.
+
+See `notebooks/README.md` for the set-up on Windows and macOS. The small tables made by hand (13 events with
+their sources, commune of each station) are in `data/external/`.
 
 ## Collect the data again (use 2)
 
