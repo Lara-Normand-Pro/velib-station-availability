@@ -66,6 +66,33 @@ data it needs from Zenodo (about 750 MB, with checksums) and queries the Parquet
 See `notebooks/README.md` for the set-up on Windows and macOS. The small tables made by hand (13 events with
 their sources, commune of each station) are in `data/external/`.
 
+## From the report to the code
+
+Where each figure and each key number of `report.pdf` (in the submitted archive; `report/report.pdf` in this repository) comes from. "Notebook §x" is
+a section of `notebooks/analysis.ipynb`; the pipeline scripts are in `code/`.
+
+| In the report | Produced by |
+|---|---|
+| 24,998,625 rows, 16,452 captures, 1,515 panel stations (§2, §6) | notebook §0.2 Self-check |
+| 288 captures a day, no failed request, longest gap 5 min (§1 table, §2) | `code/coverage.py`; notebook §2 (`fig_coverage.png`) |
+| 122 partial captures (§1 table, §2) | `code/validate.py` (`capture_quality.csv`) |
+| Figure 1; `last_reported` (89.4 %), coarser sampling (93 % / 54 %, 50 % / 16 %), 6.12 % with deduplication (§2) | `code/sampling_test.py` (`sampling_sensitivity.csv`); notebook §5 (`fig_sampling.png`) |
+| Cleaning flags table; `in_panel` 24,740,954 rows, 98.97 % (§2) | `code/clean.py` (`cleaning_log.csv`); notebook §3 (`fig_cleaning.png`) |
+| 770 absent station-captures (§2) | notebook §3, second code cell |
+| Storage tables: eight formats, designs A and B (§3) | `code/storage_benchmark.py`; notebook §4 (`RUN_BENCHMARK = True`) |
+| How often: 6.94 % / 5.21 %, no alternative 2.17 % / 1.96 %, out of service 2.35 points (§4) | notebook §7.1 (tables built in §0.6 and §0.7) |
+| Figure 2, weekday and hour (§4) | notebook §7.2 (`fig_hour_weekday.png`) |
+| Figure 3, map; median and 90th percentile, 91 stations above 20 %, Notre-Dame rings (§4) | notebook §7.3 (`fig_station_map.png`) |
+| Table Paris against the rest; isolated stations 8.9 % / 76.1 %, 487 isolated, reweighting 0.9 % / 1.0 % (§4, §6) | notebook §7.4; pair table from §0.5, communes from `data/external/station_communes.csv` (`code/build_station_communes.py`) |
+| Radius test 200 / 300 / 500 m (§4) | notebook §7.4, radius test |
+| Without the 14 event days, without the eight stations always out of service, first and second half (§4) | notebook §7.5 |
+| VM2 gives the same rates as VM1 (§6) | notebook §7.5, VM2 comparison (run once with `VM = "vm2"`) |
+| Figure 4, events timeline (§5) | notebook §6 (`fig_events_timeline.png`); `data/external/events.csv` |
+| Closed stations out of service 72 % / 49 % against 3.7 % (§5) | notebook §6, station-level check; `data/external/closed_stations_E09.csv`, `closed_stations_E10.csv` |
+| Hourly peaks 11.1 % / 9.7 % against a 1.26 % median over 29 days (§5) | notebook §6, peak table |
+| Stations out of service for half a day: 128-162, 145, median 19 over 36 days (§5) | notebook §6, count check |
+| Replay video (§5) | notebook §10 (`RUN_REPLAY = True`) |
+
 ## Collect the data again (use 2)
 
 The collector is one shell script run by cron on a Linux machine with `curl` and `python3`
