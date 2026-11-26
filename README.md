@@ -6,7 +6,7 @@ cannot give or take a bike, and whether another working station lies within 300 
 4-minute walk) at that moment.
 
 - **Data (Zenodo):** [10.5281/zenodo.24444738](https://doi.org/10.5281/zenodo.24444738). Raw captures, derived tables, checksums, frozen code.
-- **This repository:** the code, the setup to collect again, the analysis, the report and the slides.
+- **This repository:** the code, the setup to collect again, the analysis and the report.
 
 ## What is where
 
@@ -17,14 +17,13 @@ cannot give or take a bike, and whether another working station lies within 300 
 | Pipeline code (`code/`) | yes, frozen copy (`code.zip`) | yes, living version |
 | Data dictionary | yes | yes (`DATA_DICTIONARY.md`) |
 | VM setup and collection scripts | `collect.sh`, `crontab.txt` in `code.zip` | yes (`code/`, `vm_setup/`) |
-| Analysis notebook, report, slides | no | yes (`notebooks/`, `report/`, `slides/`) |
+| Analysis notebook, report | no | yes (`notebooks/`, `report/`) |
 
 ```
 code/          the pipeline (run_all.py runs everything), collect.sh, crontab.txt, pack_vm.sh
 vm_setup/      how the collector VMs were set up
 notebooks/     the analysis
 report/        final report
-slides/        presentation
 data/          data/external/: small hand-made tables (events, communes); the rest is empty here, see data/README.md
 DATA_DICTIONARY.md   every file, table and column
 ```
