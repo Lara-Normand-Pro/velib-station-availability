@@ -136,7 +136,7 @@ If your numbers differ, stop and find out why before analysing.
 
 Done: collection, cleaning pipeline, Zenodo archive, documentation, notebook structure and code for sections 1 to 10, draft `events.csv`.
 
-Not yet run on the real files: the download from Zenodo and the self-check on the real 25 M rows have to be run once. If the self-check stops, look at the printed table first. Column names of `sampling_sensitivity.csv`, `cleaning_log.csv` and `coverage_status.csv` are matched loosely; fix them in sections 2, 3 and 5 if a figure is skipped.
+**Tested by someone else:** a group member who had not worked on the notebook cloned the repository and ran it from a clean clone (download from Zenodo, self-check on the real 25 M rows). If the self-check stops, look at the printed table first. Column names of `sampling_sensitivity.csv`, `cleaning_log.csv` and `coverage_status.csv` are matched loosely; fix them in sections 2, 3 and 5 if a figure is skipped.
 
 Open:
 - verify every row of `events.csv` against its source, and copy the closed-station lists (E09, E10) into `data/external/closed_stations_<id>.csv`; also check whether E09 and E10 are really two closures
@@ -145,4 +145,3 @@ Open:
 - radius sensitivity 200 / 500 m (7.4) and a VM2 comparison (7.5)
 - write the readings under sections 6, 7 and 9; source for the 300 m figure; confirm the `absent` count (about 770)
 - pick the snapshot moments after looking at section 6, render the replay (`RUN_REPLAY = True`)
-- someone outside the group reruns the notebook from a clean clone (section 8)

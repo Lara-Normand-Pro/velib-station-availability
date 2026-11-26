@@ -1,6 +1,6 @@
 # External data sources
 
-Everything in `data/external/` that does not come from the Vélib' feed. Fill in one block per source **when you download it**. Raw downloads of large files are not committed; the small derived files and the script that builds them are.
+Everything in `data/external/` that does not come from the Vélib' feed. One block per source. Raw downloads of large files are not committed; the small derived files and the script that builds them are.
 
 Rule: another student must be able to redo the join from this file alone. Record the exact edition, the date you accessed it, and a checksum.
 
