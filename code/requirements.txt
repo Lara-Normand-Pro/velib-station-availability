@@ -1,4 +1,5 @@
 pandas>=2.0
 pyarrow>=14.0
 numpy>=1.26
+requests>=2.31      # only for build_station_communes.py
 duckdb>=1.0      # only for storage_benchmark.py
