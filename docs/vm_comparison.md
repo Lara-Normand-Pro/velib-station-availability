@@ -51,5 +51,4 @@ it still archives them, and only files that fail the core check go to `quarantin
   split is unavailable for about 0.7% of the captures.
 - One machine would have been enough over this period. The second one is a safeguard, and its
   archive is a check of the first. We use VM1 as the main series and do not merge the two.
-- Both VMs sit in the same cloud region, so a regional outage would have hit both. It would show as
-  a gap in both logs; there is none.
+- The two VMs sit in different regions (Denmark East and Sweden), so a regional outage would not have hit both. We saw no gap in either log.
