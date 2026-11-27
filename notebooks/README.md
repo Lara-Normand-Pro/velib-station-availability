@@ -136,6 +136,8 @@ If your numbers differ, stop and find out why before analysing.
 
 Done: collection, cleaning pipeline, Zenodo archive, documentation, and the analysis in sections 1 to 10.
 
+**Outputs.** The notebook writes its results to `outputs/` at the repository root. The repository ships the four figures of the report (`fig_sampling.png`, `fig_hour_weekday.png`, `fig_station_map.png`, `fig_events_timeline.png`) and the replay video (`replay_velib.mp4`, 57 s), exactly as the notebook produced them.
+
 **Tested by someone else:** a group member who had not worked on the notebook cloned the repository and ran it from a clean clone (download from Zenodo, self-check on the real 25 M rows). If the self-check stops, look at the printed table first. Column names of `sampling_sensitivity.csv`, `cleaning_log.csv` and `coverage_status.csv` are matched loosely; fix them in sections 2, 3 and 5 if a figure is skipped.
 
 Nothing open.
