@@ -8,30 +8,39 @@ Rule: another student must be able to redo the join from this file alone. Record
 
 | File | Rows | Built by | Date built |
 |---|---|---|---|
-| `station_communes.csv` | one per station (1,525) | `code/build_station_communes.py` | 24.11.2026 (date of the saved file) |
+| `station_communes.csv` | one per station | `<script path>` | `<YYYY-MM-DD>` |
 
-Columns: `station_id`, `insee_code`, `commune`, `is_paris`, `population`, `population_year`. The notebook uses `is_paris` and `commune` (Paris against the rest, section 7) and `insee_code` (map outlines). It does not use `population` in any result.
+Columns: `station_id`, `insee_code`, `commune`, `is_paris`, `population`, `population_year`.
 
-## Source 1: commune of each station (the only external source we used for communes)
+Checks done (tick when done):
+- [ ] every panel station (1,515) has exactly one commune
+- [ ] stations near the Paris boundary (Boulogne, Neuilly, Montreuil, ...) checked by hand
+- [ ] number of Paris stations compared with a known figure
+- [ ] any station outside Île-de-France flagged
 
-| Item | Value |
-|---|---|
-| Name | API Géo, "Découpage administratif" (geo.api.gouv.fr), reverse lookup by latitude and longitude |
-| URL | https://geo.api.gouv.fr/communes?lat=...&lon=... (endpoint used by `code/build_station_communes.py`) |
-| Product and edition (millésime) | Current API at the access date; the reply does not state an edition |
-| Date accessed | November 2026 (file saved 24.11.2026) |
-| Licence | Open licence (Licence Ouverte); check the exact version on the API Géo page |
-| File name and sha256 of the download | None: the script calls the API about 1,500 times and caches the answers; the result is committed as `station_communes.csv` |
-| Notes | We planned separate IGN ADMIN-EXPRESS boundaries and INSEE population files (proposal). We used API Géo instead: one small reproducible call, a committed result, no geo libraries and no large boundary download. The question only needs the commune of each station. |
-
-## Source 2: population (not used)
+## Source 1: commune boundaries or reverse lookup
 
 | Item | Value |
 |---|---|
-| Name | `population` field returned by API Géo with each commune |
-| Status | Stored in `station_communes.csv`, used in no result. No separate INSEE file was downloaded. |
-| Reference year | Not stated in the API reply, so `population_year` is "not stated by API Géo" |
-| Notes | Population counts residents, not Vélib' users, so we never read it as "people affected". It would also not match the data period (autumn 2026). |
+| Name | `<API Géo "Découpage administratif" / IGN ADMIN EXPRESS / other>` |
+| URL | |
+| Product and edition (millésime) | |
+| Date accessed | |
+| Licence | `<Licence Ouverte 2.0 / other, check the exact wording>` |
+| File name and sha256 of the download | |
+| Notes | |
+
+## Source 2: population
+
+| Item | Value |
+|---|---|
+| Name | INSEE, Populations de référence 2023 (candidate; confirm) |
+| URL | |
+| Reference date | population at 1 January 2023, commune limits of 1 January 2025 (confirm on the page) |
+| Date accessed | |
+| Licence | |
+| File name and sha256 of the download | |
+| Notes | Paris: use the whole commune (INSEE code 75056) for "Paris vs rest". The vintage (2023) differs from the Vélib' data (autumn 2026): state it. |
 
 ## Source 3: events (demonstrations, closures, damage) between 20.09 and 16.11.2026
 
