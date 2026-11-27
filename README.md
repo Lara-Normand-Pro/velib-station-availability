@@ -30,8 +30,8 @@ DATA_DICTIONARY.md   every file, table and column
 
 ## Reproduce the results from the data (use 1)
 
-You need Python (tested with 3.12) and about 64 GB of RAM for a full rebuild (one collector is about
-25 million rows). Allow about 2 hours per collector.
+You need Python (tested with 3.12). The full rebuild was run on a laptop with 64 GB of RAM and on one with
+16 GB (one collector is about 25 million rows); we recommend at least 16 GB. Allow about 2 hours per collector.
 
 1. Download all files of the Zenodo record into one folder and check them:
    `sha256sum -c SHA256SUMS.txt` (Linux, macOS) or `Get-FileHash <file> -Algorithm SHA256` (Windows).
