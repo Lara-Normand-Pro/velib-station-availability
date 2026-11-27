@@ -78,15 +78,14 @@ The cleaned table has about **25 million rows and 29 columns**. Loading it whole
 5. Do not loop over rows in Python; use set-based SQL joins (the 300 m alternative-station rule in 0.7 is built this way, one day at a time).
 6. If the notebook is slow or runs out of memory, lower `MEMORY_LIMIT` and `THREADS` at the top; DuckDB then spills to `data/tmp/`.
 
-## 5. External data (still to bring in)
+## 5. External data (already in the repository)
 
-The question compares Paris with the surrounding communes, so each station needs a commune and a population. This is **not in the Zenodo record** and has to be added:
+The question compares Paris with the surrounding communes, so each station needs a commune. This is **not in the Zenodo record**, so it is added in `data/external/`:
 
-- commune (INSEE code, name) of every station: API Géo or IGN ADMIN EXPRESS boundaries
-- population per commune: INSEE, "Populations de référence 2023" (context only, never "people affected")
-- events of the period (`data/external/events.csv`, draft provided, every row `to_verify` until someone opens the source; see `SOURCES.md`)
+- `station_communes.csv`: the commune (INSEE code, name) of every station, built with `code/build_station_communes.py` from API Géo (reverse lookup by latitude and longitude, 5 to 10 minutes, answers cached). The notebook only reads it (section 0.4); set `BUILD_COMMUNES = True` to rebuild it. Its `population` column is not used in any result, and the API does not state its year.
+- `events.csv`: the 13 events of the period, each with its source and access date; `closed_stations_E09.csv` and `closed_stations_E10.csv` list the closed stations.
 
-Quickest route: `python code/build_station_communes.py` (API Géo, 5 to 10 minutes; see `04_EXTERNAL_DATA_HOWTO.md` at the root of the pack), or set `BUILD_COMMUNES = True` in section 0.4. Method: do the join **once**, save the small result as `data/external/station_communes.csv` (about 1,500 rows), commit it, and document every source in `data/external/SOURCES.md` (template provided). The rest of the notebook then needs neither the network nor geo libraries.
+Every source is documented in `data/external/SOURCES.md`. The rest of the notebook needs neither the network nor geo libraries.
 
 ## 6. What the notebook does, in order
 
@@ -94,14 +93,14 @@ The notebook follows the story of the report. Part 0 is the workflow, run once; 
 
 | Part | Content | Output |
 |---|---|---|
-| 0.1 to 0.7 | Data (download, checksum, unpack), **self-check** (stops if numbers differ), panel stations, commune table (**TODO**), 300 m pairs, one pass over the 25 M rows (counts per station x UTC hour), alternative rule | `data/derived/` |
-| 0.8 | Events table loaded from `data/external/events.csv` (**TODO**: verify sources) | `EVENT_DAYS` |
+| 0.1 to 0.7 | Data (download, checksum, unpack), **self-check** (stops if numbers differ), panel stations, commune table, 300 m pairs, one pass over the 25 M rows (counts per station x UTC hour), alternative rule | `data/derived/` |
+| 0.8 | Events table loaded from `data/external/events.csv` (13 verified events) | `EVENT_DAYS` |
 | 1 | Question, defined terms, what changed after each feedback round | text |
 | 2 | Data and collection | `fig_coverage.png` |
 | 3 | Quality and cleaning: flag, do not alter | `fig_cleaning.png` |
-| 4 | Storage: format benchmark + **design benchmark** (Parquet + DuckDB vs SQLite with reference tables), off by default; decision (**TODO**) | `storage_benchmark.csv`, `storage_design_benchmark.csv` |
+| 4 | Storage: format benchmark + **design benchmark** (Parquet + DuckDB vs SQLite with reference tables), off by default; decision | `storage_benchmark.csv`, `storage_design_benchmark.csv` |
 | 5 | Sampling and `last_reported` | `fig_sampling.png` |
-| 6 | **Validation with events**: timeline with events, spike against baseline, closed-station check (**TODO**: station lists) | `fig_events_timeline.png` (report fig. 1) |
+| 6 | **Validation with events**: timeline with events, spike against baseline, closed-station check (closure lists E09 and E10) | `fig_events_timeline.png` (report fig. 1) |
 | 7 | Analysis: how often, when (`fig_hour_weekday.png`), where (`fig_station_map.png`), 300 m question, robustness without event days. Each subsection prints **Observation** sentences and has a checklist for the interpretation | report figs. 2 to 4 |
 | 8 | Reproducibility: three layers | text |
 | 9 | Conclusion (three-sentence answer template), limits, lessons (draft to edit) | text |

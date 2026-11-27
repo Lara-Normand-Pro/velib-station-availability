@@ -160,8 +160,8 @@ as many lookups, and measure again on the whole period before choosing.
 - The two machines are not merged: VM1 is the main series, and VM2 is a reliability check.
   Both machines hold every 5-minute slot of the 57 full days (`docs/vm_comparison.md`), so a merge
   would add no capture.
-- The commune boundaries (IGN) and population (INSEE), joined in the analysis step. Population is
-  used as context (stations per resident, density), never as a count of affected users.
+- The commune of each station, from API Géo (IGN contours), joined in the analysis step. Its
+  population figure is not used in any result; population counts residents, never affected users.
 - Demonstrations and riots in Paris after the 29.09 snapshot appear in the data collected later
   (stations closed or damaged). In the analysis we will mark those days and report the results
   with and without them.
