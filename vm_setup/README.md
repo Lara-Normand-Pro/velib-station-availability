@@ -48,6 +48,8 @@ What `collect.sh status` / `collect.sh info` does on each run:
 
 The script never modifies or deletes anything it already saved.
 
+This is version 2 of the script (installed after peer review round 1): it checks the content before archiving. Version 1, used at the start, only logged the HTTP code, so older log lines have 3 fields instead of 6; `coverage.py` reads both.
+
 ## 3. Schedule it
 
 Open the crontab with `crontab -e` and add the two lines from `code/crontab.txt`:
@@ -73,7 +75,7 @@ A weekly look at these two lines is enough to catch an outage early.
 
 ## 5. Second machine (optional)
 
-We ran a second identical VM in parallel. In our data, where both collected the same slot, the content is
+We ran a second identical VM in parallel, in another region: VM1 on Azure in Denmark East, VM2 on Azure in Sweden Central, so a regional outage would not hit both. In our data, where both collected the same slot, the content is
 nearly identical, so the second VM acts as a reliability check rather than as an independent sample. If you
 do the same, keep each VM's data separate and do not merge the two series.
 

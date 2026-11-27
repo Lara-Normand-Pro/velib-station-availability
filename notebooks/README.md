@@ -2,7 +2,7 @@
 
 Group H, Vélib' station availability (ESSEC, Data, Data storage). This folder holds the analysis notebook. It is written to run on **macOS or Windows**, without anything from the original author's computer. Data are downloaded from Zenodo; nothing large is stored in this repository.
 
-**Status:** merged version of 24.11. The base (Kenza's notebook) ran end to end on the real data (24,998,625 rows); the added cells were tested on a synthetic table with the same schema, VM1 and VM2, and have not yet been run on the real files. It contains the written readings, the 13 verified events, the closure lists E09 and E10, the count check by day, the VM2 comparison, the environment record and the replay video with a map background. The file is saved **without outputs**: run it to get them. Two switches are off by default and must be set to `True` by hand in the first code cell: `RUN_BENCHMARK` (section 4) and `RUN_REPLAY` (section 10).
+**Status:** final version of 27.11. It ran end to end on the real data (24,998,625 rows, 16,452 captures) and the figures of the report come from it. It contains the written readings, the 13 verified events, the closure lists E09 and E10, the commune table, the count check by day, the radius and event-day checks, the VM2 comparison, the environment record and the replay video with a map background. The file is saved **without outputs**: run it to get them. Two switches are off by default and must be set to `True` by hand in the first code cell: `RUN_BENCHMARK` (section 4) and `RUN_REPLAY` (section 10).
 
 ## 1. What you need
 
@@ -134,14 +134,8 @@ If your numbers differ, stop and find out why before analysing.
 
 ## 8. What is done / what is open
 
-Done: collection, cleaning pipeline, Zenodo archive, documentation, notebook structure and code for sections 1 to 10, draft `events.csv`.
+Done: collection, cleaning pipeline, Zenodo archive, documentation, and the analysis in sections 1 to 10.
 
 **Tested by someone else:** a group member who had not worked on the notebook cloned the repository and ran it from a clean clone (download from Zenodo, self-check on the real 25 M rows). If the self-check stops, look at the printed table first. Column names of `sampling_sensitivity.csv`, `cleaning_log.csv` and `coverage_status.csv` are matched loosely; fix them in sections 2, 3 and 5 if a figure is skipped.
 
-Open:
-- verify every row of `events.csv` against its source, and copy the closed-station lists (E09, E10) into `data/external/closed_stations_<id>.csv`; also check whether E09 and E10 are really two closures
-- commune and population table (0.4): Paris against the rest in 7.3
-- storage benchmark on the full period and the decision text (section 4)
-- radius sensitivity 200 / 500 m (7.4) and a VM2 comparison (7.5)
-- write the readings under sections 6, 7 and 9; source for the 300 m figure; confirm the `absent` count (about 770)
-- pick the snapshot moments after looking at section 6, render the replay (`RUN_REPLAY = True`)
+Nothing open.
